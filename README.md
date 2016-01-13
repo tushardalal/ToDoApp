@@ -6,18 +6,19 @@ Submitted by: Tushar Dalal
 
 Time spent: 32 hours spent in total (including setup / image editing)
 
-# User Stories
+## User Stories
 
-REQUIRED functionality is completed:
+**REQUIRED** functionality is completed:
 
-* User can add and remove tasks items in TODO list.
-* User can Tap a TODO item in the list and bring up an edit screen for the selected TODO item and can change the TODO text and or marks as complete / incomplete.
-* Once the TODO item is added into list it automatically persist in local file based storage. And restores the TODO items on restart of application.
+* [ ] User can **successfully add and remove items** from the todo list
+* [ ] User can **tap a todo item in the list and bring up an edit screen for the TODO item** and then have any changes to the text reflected in the todo list.
+* [ ] User can **persist todo items** and retrieve them properly on app restart
 
 
-OPTIONAL functionality
+**OPTIONAL** functionality
 
-* It shows the tick mark image on completed tasks.
+* [ ] Added task complete/incomplete status
+* [ ] Tweak the style to show completed tasks.
 
 
 
@@ -25,7 +26,7 @@ Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://github.com/tushardalal/ToDoApp/blob/master/app/src/main/res/drawable/done.png' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/tushardalal/ToDoApp/blob/master/ToDoApp.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
