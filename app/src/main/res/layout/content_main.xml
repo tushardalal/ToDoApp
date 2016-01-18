@@ -18,8 +18,8 @@
         android:id="@+id/lvItems"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/btnAddItem" />
-
+        android:layout_above="@+id/btnAddTask" />
+    <!--
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,15 +27,51 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="42dp"
-        android:hint="@string/addItem"
+        android:hint="@string/taskDesc"
         android:layout_toStartOf="@+id/btnAddItem" />
+    -->
+    <!--
+    <ImageButton
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:layout_marginRight="3dp"
+        android:id="@+id/btnAddTask"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/btnAddAudioTask"
+        android:src="@drawable/edittask"/>
+
+    <ImageButton
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:layout_marginLeft="3dp"
+        android:id="@+id/btnAddAudioTask"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/lvItems"
+        android:src="@drawable/editaudiotask"/>
+
+        android:text="@string/add"
+-->
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add"
-        android:id="@+id/btnAddItem"
+        android:layout_width="150px"
+        android:layout_height="150px"
+        android:layout_marginRight="10dp"
+        android:id="@+id/btnAddTask"
         android:layout_alignParentBottom="true"
+        android:background="@drawable/edittask"
+        android:layout_toLeftOf="@+id/btnAddAudioTask" />
+
+    <Button
+        android:layout_width="150px"
+        android:layout_height="150px"
+        android:layout_marginRight="16dp"
+        android:id="@+id/btnAddAudioTask"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/editaudiotask"
         android:layout_alignEnd="@+id/lvItems" />
 
 </RelativeLayout>

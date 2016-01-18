@@ -1,6 +1,8 @@
 package com.codepath.todoapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +20,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.codepath.todoapp.db.TaskDBHelper;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedReader;
@@ -29,16 +33,17 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     public static final int TODOTASK_EDIT_REQUEST_CODE = 10;
-
+    public static final String TASK_ROW_INDEX = "TASK_ROW_INDEX";
+    public static final String TASK_OBJ = "TASK_OBJ";
+    public static final String TASK_ACTION = "TASK_ACTION";
+    public static final String TASK_ACTION_DELETE = "TASK_ACTION_DELETE";
+    public static final String TASK_ACTION_UPDATE = "TASK_ACTION_UPDATE";
     private static final String TODOTASK_FILENAME="todoTask.txt";
 
     private ArrayList<TaskData> alTodoItems;
     private TaskArrayAdapter aaTodoAdapter;
-//    private ArrayList<String> alTodoItems;
-//    private ArrayAdapter<String> aaTodoAdapter;
     private ListView lvItems;
-
-//    private Intent editItemIntent = new Intent(this, EditItemActivity.class);
+    //private TaskDBHelper taskHelper = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         */
-
-
-        readToDoTasks();
+        //taskHelper = new TaskDBHelper(this);
+        //loadAllTaskFromFile();
+        loadAllTask();
         if(alTodoItems == null) {
             //alTodoItems = new ArrayList<String>();
             alTodoItems = new ArrayList<TaskData>();
@@ -72,9 +77,13 @@ public class MainActivity extends AppCompatActivity {
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                alTodoItems.remove(position);
-                aaTodoAdapter.notifyDataSetChanged();
-                writeToDoTasks();
+                deleteTaskByConfirmation(alTodoItems.get(position));
+
+//                TaskData tdToDelete = alTodoItems.remove(position);
+//                aaTodoAdapter.notifyDataSetChanged();
+//                //writeToDoTasksToFile(null); //Delete TASK.
+//                deleteTask(tdToDelete);
+//                return true;
                 return true;
             }
         });
@@ -82,53 +91,39 @@ public class MainActivity extends AppCompatActivity {
         lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //System.out.println(">>> ID:" + id);
-                //System.out.println(">>> ID:" + view.getId());
-                //System.out.println(">>> ID:" + view.getTag());
-                TaskData td = alTodoItems.get(position);
-                Intent editItemIntent = new Intent(MainActivity.this, EditItemActivity.class);
-                editItemIntent.putExtra("taskIndex", position);
-                editItemIntent.putExtra("todoTask", td.getTask());
-                editItemIntent.putExtra("taskCompleteStat", td.isTaskDone());
-                //startActivity(editItemIntent);
-                startActivityForResult(editItemIntent, TODOTASK_EDIT_REQUEST_CODE);
-
-                /*
-                td.setTaskDone(!td.isTaskDone());
-                aaTodoAdapter.notifyDataSetChanged();
-                writeToDoTasks();
-                */
+                addOrEditTask(position);
             }
         });
 
-        Button btnAddItem = (Button)findViewById(R.id.btnAddItem);
-        btnAddItem.setOnClickListener(new View.OnClickListener() {
+        Button btnAddTask = (Button)findViewById(R.id.btnAddTask);
+        btnAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 EditText etTmp = (EditText) findViewById(R.id.etEditText);
-                aaTodoAdapter.add(new TaskData(etTmp.getText().toString()));
+                TaskData td = new TaskData(etTmp.getText().toString());
+                aaTodoAdapter.add(td);
                 aaTodoAdapter.notifyDataSetChanged();
                 etTmp.setText("");
-                writeToDoTasks();
+                //writeToDoTasksToFile(td);
+                insertTask(td);
+                */
+                addOrEditTask(-1);
             }
         });
 
+        final Button btnAddAudioTask = (Button)findViewById(R.id.btnAddAudioTask);
+        btnAddAudioTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addOrEditAudioTask(-1);
+            }
+        });
     }
 
-    protected void readToDoTasks() {
-        /*
-        ///alTodoItems.add("ToDo note 1");
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, "todoTask.txt");
-        try {
-            alTodoItems = new ArrayList<String>(FileUtils.readLines(todoFile));
-            aaTodoAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, alTodoItems);
-        }catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        */
+    protected void loadAllTaskFromFile() {
 
-
+        //--[Start]--File Based Persistence -------------------
         File filesDir = getFilesDir();
         File todoFile = new File(filesDir, TODOTASK_FILENAME);
         try {
@@ -143,18 +138,17 @@ public class MainActivity extends AppCompatActivity {
                 td.setProperties(task);
                 alTodoItems.add(td);
             }
-
             aaTodoAdapter = new TaskArrayAdapter(this,R.layout.task_details,alTodoItems);
         }catch (IOException ioe) {
             ioe.printStackTrace();
         }
-
+        //--[ End ]--File Based Persistence -------------------
     }
 
     /**
      * Write ToDoTask tasks into flat file.
      */
-    protected void writeToDoTasks() {
+    protected void writeToDoTasksToFile(TaskData td) {
         File filesDir = getFilesDir();
         File todoFile = new File(filesDir, TODOTASK_FILENAME);
         try {
@@ -177,43 +171,130 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
         if (resultCode == RESULT_OK && requestCode == TODOTASK_EDIT_REQUEST_CODE) {
-            // Extract name value from result extras
-            String task = data.getExtras().getString("updatedTask");
+            // Extract the Index & TaskData object from Response
+            int index = data.getExtras().getInt(TASK_ROW_INDEX, 0);
+            TaskData td = (TaskData)data.getSerializableExtra(TASK_OBJ);
 
-            // Toast the name to display temporarily on screen
-            Toast.makeText(this, task, Toast.LENGTH_SHORT).show();
+            String action = data.getExtras().getString(TASK_ACTION);
+            if(TASK_ACTION_DELETE.equals(action)) {
+                if (index >= 0 && td.getTaskId() >= 0) {
+                    deleteTaskByConfirmation(alTodoItems.get(index));
+                }else{
+                    Log.d("TD","Invalid request for delete.");
+                }
+            }else if(TASK_ACTION_UPDATE.equals(action)) {
+                // Toast the name to display temporarily on screen
+                Toast.makeText(this, td.getTaskDesc(), Toast.LENGTH_SHORT).show();
 
-            int index = data.getExtras().getInt("taskIndex", 0);
-            TaskData td = alTodoItems.get(index);
-            td.setTask(task);
+                //File Based persistent.
+                //writeToDoTasksToFile(td);
 
-            String completeStat = data.getExtras().getString("taskCompleteStat");
-            //System.out.println("Task Status-1 >"+ completeStat+"<");
-            //System.out.println("Task Status-2 " + Boolean.getBoolean(completeStat));
-            if(completeStat != null && completeStat.equalsIgnoreCase("true")) {
-                td.setTaskDone(true);
-            }else{
-                td.setTaskDone(false);
+                if (index == -1 || td.getTaskId() == -1) {
+                    //ADD the Data into ArrayList (List Model)
+                    aaTodoAdapter.add(td);
+                    insertTask(td);
+                } else {
+                    //Update the Data into ArrayList (List Model)
+                    alTodoItems.set(index, td);
+                    updateTask(td);
+                }
             }
-            System.out.println("Task Status-3 " + td.isTaskDone());
+            //Notify ListView for Data Changed
             aaTodoAdapter.notifyDataSetChanged();
-            writeToDoTasks();
-
         }
+    }
+
+    protected void loadAllTask() {
+        //Write Task in DB as well.
+        TaskDBHelper  taskHelper = new TaskDBHelper(this);
+        alTodoItems = taskHelper.getAll();
+        taskHelper.close();
+        aaTodoAdapter = new TaskArrayAdapter(this,R.layout.task_details,alTodoItems);
+    }
+
+    protected void insertTask(TaskData td) {
+        //Write Task in DB as well.
+        TaskDBHelper  taskHelper = new TaskDBHelper(this);
+        long stat = taskHelper.insert(td);
+        taskHelper.close();
+    }
+
+    protected void updateTask(TaskData td) {
+        //Delete the Task from database
+        TaskDBHelper  taskHelper = new TaskDBHelper(this);
+        taskHelper.update(td);
+        taskHelper.close();
+    }
+
+    protected void addOrEditTask(int position) {
+        //If the record position is -1 then ADD Mode OR it is EDIT Mode
+        Intent editItemIntent = new Intent(MainActivity.this, EditItemActivity.class);
+        editItemIntent.putExtra(TASK_ROW_INDEX, position);
+
+        if(position >= 0) {
+            TaskData td = alTodoItems.get(position);
+            if (td != null) {
+                editItemIntent.putExtra(TASK_OBJ, td);
+            }
+        }
+        //startActivity(editItemIntent);
+        startActivityForResult(editItemIntent, TODOTASK_EDIT_REQUEST_CODE);
+    }
+
+    protected void addOrEditAudioTask(int position) {
+        Toast.makeText(this, "Audio Task feature is not enable yet.", Toast.LENGTH_SHORT).show();
+    }
+
+    protected void deleteTaskByConfirmation(TaskData td) {
+        final TaskData tdToDelete = td;
+
+        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(this);
+        dlgBuilder.setTitle(R.string.deleteTaskTitle);
+        dlgBuilder.setMessage(R.string.deleteTaskMsg);
+        dlgBuilder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                deleteTask(tdToDelete);
+                dialogInterface.dismiss();
+            }
+        });
+        dlgBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        dlgBuilder.show();
+
+    }
+
+    protected void deleteTask(TaskData td) {
+        //Remove Task from UI
+        alTodoItems.remove(td);
+        aaTodoAdapter.notifyDataSetChanged();
+
+        //Delete the Task from database
+        TaskDBHelper  taskHelper = new TaskDBHelper(this);
+        taskHelper.delete(td.getTaskId());
+        taskHelper.close();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //if( taskHelper != null ) {
+        //    taskHelper.close();
+        //}
     }
 }

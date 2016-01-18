@@ -5,22 +5,106 @@
     android:padding="5dp">
 
     <ImageView
-        android:id="@+id/logo"
+        android:id="@+id/row_taskStat"
         android:layout_width="100px"
-        android:layout_height="100px"
-        android:layout_marginLeft="5px"
+        android:layout_height="120px"
+        android:layout_marginLeft="0px"
         android:layout_marginRight="20px"
         android:layout_marginTop="5px"
+        android:gravity="center_vertical"
         android:src="@drawable/notdone">
     </ImageView>
 
-    <TextView
-        android:id="@+id/label"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@+id/label"
-        android:textSize="50px"
+        android:layout_height="match_parent"
         android:gravity="fill_horizontal"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        >
+        <TextView
+            android:id="@+id/row_taskDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@+id/label"
+            android:textSize="50px"
+            >
+        </TextView>
+        <!--
+        <TextView
+            android:id="@+id/row_taskDue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@+id/label"
+            android:layout_gravity="right"
+            android:textSize="30px"
+            >
+        </TextView>
+        -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="fill_horizontal"
+            android:layout_weight="1"
+            android:layout_gravity="bottom">
+            <TextView
+                android:id="@+id/row_taskDue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@+id/label"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:textSize="35px"
+                android:textStyle="bold">
+            </TextView>
+            <TextView
+                android:id="@+id/row_priority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@+id/label"
+                android:layout_gravity="end"
+                android:textSize="35px"
+                android:textStyle="bold">
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+    <!--
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+    <TextView
+        android:id="@+id/row_priority"
+        android:layout_width="90px"
+        android:layout_height="90px"
+        android:text="L"
+        android:paddingLeft="4dp"
+        android:paddingRight="3dp"
+        android:gravity="center_vertical"
+        android:textSize="50px"
+        android:background="@drawable/circle"
+        android:textColor="@color/colorWhite"
+        >
+    <TextView
+        android:id="@+id/row_priorityX"
+        android:layout_width="90px"
+        android:layout_height="90px"
+        android:text="L"
+        android:paddingLeft="4dp"
+        android:paddingRight="3dp"
+        android:gravity="center_vertical"
+        android:textSize="50px"
+        >
     </TextView>
+    -->
+
+    <ImageView
+        android:id="@+id/row_audio"
+        android:layout_width="50px"
+        android:layout_height="100px"
+        android:gravity="center_vertical"
+        android:layout_gravity="right"
+        >
+        <!--android:background="@drawable/audioplay"-->
+    </ImageView>
+
 </LinearLayout>
