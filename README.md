@@ -1,6 +1,7 @@
 # ToDoApp
 
-**ToDoApp** is Simple android TODO Task App. This supports the Create Task/ Edit Task & Delete Task functionality. It also supports the status of Task whether it is done or incomplete.
+**ToDoApp** is Simple android TODO Task App. This supports the Create Task/ Edit Task & Delete Task functionality. It also supports the following features like task Due Date, task Priority as well as status whether it is Done or Pending.
+
 
 Submitted by: Tushar Dalal
 
@@ -17,19 +18,31 @@ Time spent: 32 hours spent in total (including setup / image editing)
 
 **OPTIONAL** functionality
 
-* [ ] Persist the todo items [into SQLite](http://guides.codepath.com/android/Persisting-Data-to-the-Device#sqlite) instead of a text file
-* [ ] Improve style of the todo items in the list [using a custom adapter](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView)
-* [ ] Add support for completion due dates for todo items (and display within listview item)
-* [ ] Use a [DialogFragment](http://guides.codepath.com/android/Using-DialogFragment) instead of new Activity for editing items
-* [ ] Add support for selecting the priority of each todo item (and display in listview item)
+* [x] Persist the todo items [into SQLite](http://guides.codepath.com/android/Persisting-Data-to-the-Device#sqlite) instead of a text file
+* [x] Improve style of the todo items in the list [using a custom adapter](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView)
+* [x] Add support for completion due dates for todo items (and display within listview item)
+* [x] Use a [DialogFragment](http://guides.codepath.com/android/Using-DialogFragment) instead of new Activity for editing items
+* [x] Add support for selecting the priority of each todo item (and display in listview item)
 * [x] Tweak the style improving the UI / UX, play with colors, images or backgrounds
+
+The following **additional** features are implemented:
+* [x] Delete Task introduced with comfirmation message.
+
+Next **Release** features.
+
+* [ ] Splash Screen with App Logo
+* [ ] Planning to add the Audio Task (6 Seconds)
+* [ ] Planning to add App Settings with optiosn like
+      Purge completed task
+      Sort Task based on Priority - or natural order.
+
 
 
 Video Walkthrough 
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://github.com/tushardalal/ToDoApp/blob/master/ToDoApp.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/tushardalal/ToDoApp/blob/master/ToDoApp_2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
