@@ -2,8 +2,11 @@
 
 **ToDoApp** is Simple android TODO Task App. This supports the Create Task/ Edit Task & Delete Task functionality. It also supports the following features like task Due, task Priority as well as status whether it is Done or Pending.
 
+
 **NEW FEATURE**
+
 **New feature is added to Create the task by speaking the task with day and priority.**
+
 For example:
 You can create the new task by saying 'Pickup books tomorrow' - Will type the text into the Task Description and set the due date tomorrow.
 OR
