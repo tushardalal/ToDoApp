@@ -31,7 +31,7 @@ public class TaskData implements Serializable {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm");
 
-    private long taskId;
+    private long taskId = -1;
     private String taskDesc;
     private Date complitionDateTime;
     private String priority = TASK_PRIORITY_LOW;

@@ -2,9 +2,11 @@ package com.codepath.todoapp;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.codepath.todoapp.db.TaskDBHelper;
+import com.codepath.todoapp.util.SpeechParser;
 
 import org.apache.commons.io.FileUtils;
 
@@ -29,10 +32,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int TODOTASK_EDIT_REQUEST_CODE = 10;
+    public static final int TODOTASK_AUDIO_CAPTURE_REQUEST_CODE = 20;
     public static final String TASK_ROW_INDEX = "TASK_ROW_INDEX";
     public static final String TASK_OBJ = "TASK_OBJ";
     public static final String TASK_ACTION = "TASK_ACTION";
@@ -181,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("TD", "RESULT_CODE: " + resultCode + "  REQUEST_CODE: " + requestCode);
         if (resultCode == RESULT_OK && requestCode == TODOTASK_EDIT_REQUEST_CODE) {
             // Extract the Index & TaskData object from Response
             int index = data.getExtras().getInt(TASK_ROW_INDEX, 0);
@@ -212,7 +218,29 @@ public class MainActivity extends AppCompatActivity {
             }
             //Notify ListView for Data Changed
             aaTodoAdapter.notifyDataSetChanged();
+        }else if(resultCode == RESULT_OK && requestCode == TODOTASK_AUDIO_CAPTURE_REQUEST_CODE) {
+            if(data != null) {
+                ArrayList<String> alAudioToTextTask = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                TaskData taskData = processAudioInput(alAudioToTextTask);
+                //taskData.setTaskDesc(alAudioToTextTask.get(0));
+                Log.d("TD", "Audio Data FULL: " + alAudioToTextTask);
+                Log.d("TD", "Audio Data: " + alAudioToTextTask.get(0) );
+
+                //Call the Add Task activity for other details to capture.
+                Intent editItemIntent = new Intent(MainActivity.this, EditItemActivity.class);
+                editItemIntent.putExtra(TASK_ROW_INDEX, -1);
+                editItemIntent.putExtra(TASK_OBJ, taskData);
+                startActivityForResult(editItemIntent, TODOTASK_EDIT_REQUEST_CODE);
+            }
         }
+    }
+
+    protected TaskData processAudioInput(ArrayList<String> alAudioToTextTask) {
+        String text = alAudioToTextTask.get(0);
+        Log.d("TD","Text:>"+text+"<");
+        TaskData taskData = SpeechParser.processAudioInput(text);
+        taskData.setTaskId(-1);
+        return taskData;
     }
 
     protected void loadAllTask() {
@@ -253,7 +281,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void addOrEditAudioTask(int position) {
-        Toast.makeText(this, "Audio Task feature is not enable yet.", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Add the new Task by talking", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
+        try {
+            startActivityForResult(intent, TODOTASK_AUDIO_CAPTURE_REQUEST_CODE);
+            //txtText.setText("");
+        } catch (ActivityNotFoundException a) {
+            Toast t = Toast.makeText(getApplicationContext(), "Opps! Your device doesn't support Speech to Text", Toast.LENGTH_SHORT);
+            t.show();
+        }
     }
 
     protected void deleteTaskByConfirmation(TaskData td) {

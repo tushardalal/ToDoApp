@@ -29,7 +29,7 @@ import java.util.Date;
 
 public class EditItemActivity extends AppCompatActivity {
 
-    private int index = 0;
+    private int rowIndex = 0;
     private TaskData taskData;
     private DatePickerFragment datePicker = null;
 
@@ -80,14 +80,20 @@ public class EditItemActivity extends AppCompatActivity {
 //        activity_edit_item create_item_label
 
         taskData = (TaskData)getIntent().getSerializableExtra(MainActivity.TASK_OBJ);
-        index = getIntent().getIntExtra(MainActivity.TASK_ROW_INDEX,-1);
-
+        rowIndex = getIntent().getIntExtra(MainActivity.TASK_ROW_INDEX,-1);
+        //
+        //NOTE:
+        //Here index is Row Index of in-memory list of task (array list index)
+        //Where as TaskId refers to the ID in the Database
+        //
         TextView task_label = (TextView)findViewById(R.id.task_label);
 
-        if(index == -1 || taskData == null) {
+        if(taskData == null) {
             //Treat it as a NEW Task
             taskData = new TaskData();
             taskData.setTaskId(-1);
+        }
+        if(rowIndex == -1 ) {
             task_label.setText(R.string.create_item_label);
         }else{
             task_label.setText(R.string.edit_item_label);
@@ -167,7 +173,7 @@ public class EditItemActivity extends AppCompatActivity {
         }
 
         //Set the Index and Modified TaskData into Intent.
-        intent.putExtra(MainActivity.TASK_ROW_INDEX, index); // pass index position back
+        intent.putExtra(MainActivity.TASK_ROW_INDEX, rowIndex); // pass index position back
         intent.putExtra(MainActivity.TASK_OBJ, taskData);
         intent.putExtra(MainActivity.TASK_ACTION, action);
 

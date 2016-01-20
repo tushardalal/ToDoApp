@@ -122,8 +122,8 @@ public class TaskDBHelper extends SQLiteOpenHelper {
         String args[] = {""+id};
         Cursor cursor =  db.rawQuery( SELECT_BY_ID_SQL, args );
 
-        Log.d("[TD]", "Going to retrieve same RECORD from DB.................");
 
+        /*
         Log.d("[TD]", "TOTAL RECORDS:" + cursor.getCount());
         Log.d("[TD]", "TOTAL COLS:" + cursor.getColumnCount());
         for(String s: cursor.getColumnNames()) {
@@ -137,6 +137,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
         Log.d("[TD]", "COL_TASK_REMINDER:" + cursor.getColumnIndex(COL_TASK_REMINDER));
         Log.d("[TD]", "COL_TASK_TYPE:" + cursor.getColumnIndex(COL_TASK_TYPE));
         Log.d("[TD]", "COL_TASK_AUDIO_FILE:" + cursor.getColumnIndex(COL_TASK_AUDIO_FILE));
+        */
 
         if(cursor.moveToFirst()) {
             td = createTaskData(cursor);
