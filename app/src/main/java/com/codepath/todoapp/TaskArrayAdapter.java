@@ -19,6 +19,7 @@ import java.util.List;
  */
 public class TaskArrayAdapter extends ArrayAdapter<TaskData> {
 
+    private static final int DISPLAY_LENGTH=27;
     private List<TaskData> lTaskData;
     private Context context;
     public TaskArrayAdapter(Context context, int resource, List<TaskData> objects) {
@@ -46,7 +47,16 @@ public class TaskArrayAdapter extends ArrayAdapter<TaskData> {
 
         //TextView Desc
         TextView tvTaskDesc = (TextView) rView.findViewById(R.id.row_taskDesc);
-        tvTaskDesc.setText(tData.getTaskDesc());
+        //
+        //TODO - Need to add the support to show the all text by expanding the height of the ROW in ListView
+        //OR
+        //By calculating the proper display width according to the screen resolution
+        //
+        if(tData.getTaskDesc().length() > DISPLAY_LENGTH) {
+            tvTaskDesc.setText(tData.getTaskDesc().substring(0,DISPLAY_LENGTH) + "...");
+        }else {
+            tvTaskDesc.setText(tData.getTaskDesc());
+        }
         //TextView Due Date
         TextView tvDue = (TextView) rView.findViewById(R.id.row_taskDue);
         tvDue.setText(tData.getFormattedComplitionDate());
